@@ -38,21 +38,38 @@ read engine;
 # i iterates over every line in the english_lang file 
 # sed 's/[ ;]*$//' english_lang removes all ; (not permanently) and the output is stored in i
 
+#INPUT_FILE='intl_en.arb'
+echo "Insert input file"
+read INPUT_FILE;
+
+echo "Insert destination languajes split by ','"
+read DESTINATION_LANGS;
+
+echo $DESTINATION_LANGS > destlangs.txt
+
 IFS=$'\n'
 
-for i in $(sed 's/[ ;]*$//' english_lang); do
+langs=$(echo $DESTINATION_LANGS | tr "," "\n")
 
-  key=$(echo $i | awk -F'=' {'print $1 '});
-  text=$(echo $i| awk -F'=' {'print $2'});
+for k in $langs; do
 
-  if [[ $text = *[!\ ]* ]]; then
+	echo "{" >> "intl_$k.arb" 
 
-		value=$(./trans.sh -b  -t $lang -e $engine $text);
-		value=$(echo $value| tr -d '"');
-		echo "$key =\"$value\"";
-		echo "$key =\"$value\";" >> output.txt;
+	for i in $(sed 's/[,]*$//' $INPUT_FILE); do
 
-  fi
+	key=$(echo $i | awk -F':' {'print $1 '});
+	text=$(echo $i| awk -F':' {'print $2'});
+
+	if [[ $text = *[!\ ]* ]]; then
+
+			value=$(./trans.sh -b  -t $k -e $engine $text);
+			value=$(echo $value| tr -d '"');
+			# echo "$key : \"$value\"";
+			echo "$key : \"$value\"," >> "intl_$k.arb";
+
+	fi
+	done
+
+	echo "}" >> "intl_$lang.arb" 
+	
 done
-
-

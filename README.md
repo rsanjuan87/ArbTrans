@@ -1,4 +1,6 @@
-# LangfileTranslator
-Automatic Conversion of Language Files
+# ArbTrans
+This is a fork from 
 
-https://chainsaw95.github.io/coverting-language-files-through-shell/
+https://github.com/chainsaw95/Language-Converter-Scripts.git
+
+specializated in translate process the arb files
